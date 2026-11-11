@@ -20,80 +20,37 @@
     --adm-ink-muted: #5d6b64;
 }
 
-/* ── Barre latérale : vert profond ──
-   Le thème la livre en blanc avec du texte sombre. Tout ce qui suit
-   inverse ce contraste ; sans ces règles, le menu deviendrait illisible. */
-.sidebar {
-    background: linear-gradient(180deg, var(--adm-brand-900), var(--adm-brand-950)) !important;
-    border-right: 1px solid rgba(255, 255, 255, .08) !important;
+/* ── Barre latérale : fond blanc du thème, texte sombre ──
+   Elle avait d'abord été passée en vert profond avec du texte blanc. Retour au
+   blanc d'origine, à la demande.
+
+   Reste à neutraliser le survol du thème, qui inverse tout le contraste :
+   fond #0c2c1c, texte et libellé en blanc, et icônes éclaircies par un filtre.
+   Sur fond blanc, cela faisait disparaître la ligne survolée. Le menu doit
+   rester noir sur blanc en toutes circonstances.
+
+   `:not(.active)` protège la ligne de la page courante, qui garde son fond vert
+   et son texte blanc — c'est le seul repère visuel du menu. */
+.sidebar .sidebar-menu > ul > li:not(.active) > a:not(.active):hover {
+    background: transparent !important;
+    color: #212b36 !important;
 }
 
-.sidebar .sidebar-menu ul li a {
-    color: rgba(255, 255, 255, .78);
-    border-radius: 8px;
+.sidebar .sidebar-menu > ul > li:not(.active) > a:not(.active):hover span {
+    color: #637381 !important;
 }
 
-.sidebar .sidebar-menu ul li a:hover {
-    background: rgba(255, 255, 255, .10) !important;
-    color: #fff;
+/* Le thème applique `filter: brightness(0) invert(1)` aux icônes au survol :
+   sur fond blanc, elles deviennent blanches, donc invisibles. */
+.sidebar .sidebar-menu > ul > li:not(.active) > a:not(.active):hover img {
+    filter: none !important;
 }
 
-.sidebar .sidebar-menu > ul > li > a.active,
-.sidebar .sidebar-menu > ul > li.active > a {
-    background: var(--adm-brand-600) !important;
-    color: #fff !important;
-}
-
-/* Les icônes du menu sont des SVG sombres : sur fond vert il faut les
-   éclaircir, sinon elles disparaissent. */
-.sidebar .sidebar-menu ul li a img {
-    filter: brightness(0) invert(1);
-    opacity: .8;
-}
-.sidebar .sidebar-menu ul li a:hover img,
-.sidebar .sidebar-menu > ul > li > a.active img,
-.sidebar .sidebar-menu > ul > li.active > a img {
-    opacity: 1;
-}
-
-/* Titres de section du menu */
-.sidebar .sidebar-menu ul li.submenu-open .menu-title,
-.sidebar .sidebar-menu ul li .menu-title,
-.sidebar .sidebar-menu > ul > li.menu-title {
-    color: rgba(255, 255, 255, .42) !important;
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-/* Sous-menus déroulants.
-   Le thème cible `.sidebar .sidebar-menu>ul>li.submenu ul li a` : il faut au moins
-   cette spécificité, sinon le texte reste en #212b36 et devient illisible sur le
-   fond vert. */
-.sidebar .sidebar-menu > ul > li.submenu ul {
-    background: rgba(0, 0, 0, .18);
-    border-radius: 8px;
-}
-.sidebar .sidebar-menu > ul > li.submenu ul li a {
-    color: rgba(255, 255, 255, .68);
-    font-size: 13.5px;
-}
-.sidebar .sidebar-menu > ul > li.submenu ul li a:hover,
-.sidebar .sidebar-menu > ul > li.submenu ul li a.active,
-.sidebar .sidebar-menu > ul > li.submenu ul li.active a {
-    color: #fff;
-}
-
-/* Flèche des menus dépliables */
-.sidebar .sidebar-menu ul li a.subdrop::after,
-.sidebar .sidebar-menu ul li a::after {
-    color: rgba(255, 255, 255, .5);
-}
-
-/* Barre de défilement interne, invisible sur fond sombre par défaut */
-.sidebar .slimScrollBar {
-    background: rgba(255, 255, 255, .22) !important;
+/* Sous-menus : le thème colore le survol en #1f6f43, un vert peu lisible sur
+   blanc. Même règle, le texte ne bouge pas. */
+.sidebar .sidebar-menu > ul > li.submenu ul li:not(.active) a:not(.active):hover {
+    background: transparent !important;
+    color: #212b36 !important;
 }
 
 /* ── En-tête : reste blanc, avec un filet de marque ── */

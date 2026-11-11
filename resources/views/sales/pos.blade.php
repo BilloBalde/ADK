@@ -161,6 +161,352 @@
                 white-space: nowrap;
             }
 
+            /* ── Vente tierce : plusieurs produits, un client, un récapitulatif ── */
+            .vt-modal {
+                border: 0;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 30px 70px -25px rgba(12, 44, 28, .45);
+            }
+
+            .vt-header {
+                background: linear-gradient(135deg, #1f6f43, #0c2c1c);
+                color: #fff;
+                border: 0;
+                padding: 20px 26px;
+                align-items: flex-start;
+            }
+
+            .vt-header .modal-title {
+                font-weight: 700;
+                letter-spacing: -.01em;
+            }
+
+            .vt-sous-titre {
+                margin: 4px 0 0;
+                font-size: 13px;
+                color: rgba(255, 255, 255, .72);
+            }
+
+            .vt-body {
+                background: #f7faf8;
+                padding: 22px 26px;
+            }
+
+            .vt-bloc {
+                background: #fff;
+                border: 1px solid #e6ece9;
+                border-radius: 12px;
+                padding: 18px 20px;
+                margin-bottom: 16px;
+            }
+
+            .vt-bloc--recap {
+                background: linear-gradient(180deg, #fff, #f4faf6);
+            }
+
+            .vt-bloc-tete {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 14px;
+            }
+
+            .vt-bloc-tete h6 {
+                margin: 0;
+                font-size: 14px;
+                font-weight: 700;
+                color: #12261c;
+                letter-spacing: .02em;
+                text-transform: uppercase;
+                flex: 1;
+            }
+
+            .vt-num {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background: #1f6f43;
+                color: #fff;
+                font-size: 12px;
+                font-weight: 700;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            /* Bascule client existant / nouveau */
+            .vt-choix {
+                display: inline-flex;
+                background: #eef4f0;
+                border-radius: 999px;
+                padding: 3px;
+                margin-bottom: 12px;
+            }
+
+            .vt-choix-btn {
+                border: 0;
+                background: transparent;
+                color: #55665d;
+                font-size: 13px;
+                font-weight: 600;
+                padding: 7px 18px;
+                border-radius: 999px;
+                transition: background .18s ease, color .18s ease;
+            }
+
+            .vt-choix-btn.actif {
+                background: #fff;
+                color: #1f6f43;
+                box-shadow: 0 2px 6px -2px rgba(12, 44, 28, .25);
+            }
+
+            .vt-label {
+                display: block;
+                font-size: 12px;
+                font-weight: 600;
+                color: #55665d;
+                margin-bottom: 4px;
+            }
+
+            .vt-opt {
+                font-weight: 400;
+                color: #93a49b;
+            }
+
+            .vt-champ {
+                border: 1px solid #dbe4df;
+                border-radius: 9px;
+                padding: 9px 12px;
+                font-size: 14px;
+                color: #12261c;
+                background: #fff;
+                width: 100%;
+                transition: border-color .15s ease, box-shadow .15s ease;
+            }
+
+            .vt-champ:focus {
+                outline: 0;
+                border-color: #1f6f43;
+                box-shadow: 0 0 0 3px rgba(31, 111, 67, .13);
+            }
+
+            .vt-champ.vt-invalide {
+                border-color: #b42318;
+                box-shadow: 0 0 0 3px rgba(180, 35, 24, .12);
+            }
+
+            .vt-aide {
+                margin: 8px 0 0;
+                font-size: 12px;
+                color: #93a49b;
+            }
+
+            /* Lignes produit */
+            .vt-btn-ajout {
+                border: 1px dashed #1f6f43;
+                background: #f0f8f3;
+                color: #1f6f43;
+                font-size: 13px;
+                font-weight: 600;
+                border-radius: 9px;
+                padding: 7px 14px;
+                transition: background .18s ease;
+            }
+
+            .vt-btn-ajout:hover {
+                background: #dcefe3;
+            }
+
+            .vt-ligne {
+                border: 1px solid #e6ece9;
+                border-radius: 11px;
+                padding: 14px 16px 10px;
+                margin-bottom: 12px;
+                background: #fcfdfc;
+                position: relative;
+            }
+
+            .vt-ligne-tete {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 10px;
+            }
+
+            .vt-ligne-num {
+                font-size: 12px;
+                font-weight: 700;
+                color: #1f6f43;
+                background: #e8f6ec;
+                border-radius: 999px;
+                padding: 3px 11px;
+            }
+
+            .vt-btn-retirer {
+                border: 0;
+                background: transparent;
+                color: #b42318;
+                font-size: 13px;
+                padding: 4px 8px;
+                border-radius: 7px;
+                transition: background .15s ease;
+            }
+
+            .vt-btn-retirer:hover {
+                background: #fdecea;
+            }
+
+            .vt-btn-plus {
+                border: 0;
+                background: #1f6f43;
+                color: #fff;
+                border-radius: 9px;
+                padding: 0 13px;
+                flex-shrink: 0;
+            }
+
+            .vt-ligne-pied {
+                margin-top: 8px;
+                min-height: 18px;
+            }
+
+            .vt-ligne-marge {
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            .vt-ligne-marge.ok    { color: #1f6f43; }
+            .vt-ligne-marge.perte { color: #b42318; }
+
+            /* Récapitulatif */
+            .vt-recap {
+                border: 1px solid #e0eae4;
+                border-radius: 11px;
+                overflow: hidden;
+                background: #fff;
+            }
+
+            .vt-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 13.5px;
+            }
+
+            .vt-table thead th {
+                background: #f2f7f4;
+                color: #55665d;
+                font-size: 11.5px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: .04em;
+                padding: 9px 14px;
+                border-bottom: 1px solid #e0eae4;
+            }
+
+            .vt-table td {
+                padding: 10px 14px;
+                border-bottom: 1px solid #f0f4f2;
+                color: #12261c;
+            }
+
+            .vt-table tbody tr:last-child td {
+                border-bottom: 0;
+            }
+
+            .vt-table .vt-c { text-align: center; }
+            .vt-table .vt-d { text-align: right; }
+
+            .vt-table .vt-vide td {
+                text-align: center;
+                color: #93a49b;
+                font-style: italic;
+                padding: 18px;
+            }
+
+            .vt-totaux {
+                border-top: 1px solid #e0eae4;
+                background: #f8fbf9;
+                padding: 12px 14px;
+            }
+
+            .vt-ligne-total {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                padding: 4px 0;
+                font-size: 13.5px;
+                color: #55665d;
+            }
+
+            .vt-ligne-total strong {
+                color: #12261c;
+                font-weight: 600;
+            }
+
+            .vt-marge { color: #1f6f43 !important; }
+
+            .vt-ligne-total--final {
+                margin-top: 6px;
+                padding-top: 10px;
+                border-top: 1px dashed #d4e2da;
+                font-size: 15px;
+            }
+
+            .vt-ligne-total--final strong {
+                font-size: 20px;
+                font-weight: 800;
+                color: #1f6f43;
+            }
+
+            /* Pied et messages */
+            .vt-footer {
+                border: 0;
+                background: #fff;
+                padding: 16px 26px;
+                box-shadow: 0 -1px 0 #e6ece9;
+            }
+
+            .vt-btn-annuler {
+                background: #eef2f0;
+                color: #55665d;
+                font-weight: 600;
+                border-radius: 9px;
+                padding: 10px 20px;
+            }
+
+            .vt-btn-valider {
+                background: linear-gradient(135deg, #1f6f43, #195836);
+                color: #fff;
+                font-weight: 700;
+                border-radius: 9px;
+                padding: 10px 26px;
+                box-shadow: 0 8px 18px -8px rgba(31, 111, 67, .7);
+            }
+
+            .vt-btn-valider:hover { color: #fff; filter: brightness(1.07); }
+            .vt-btn-valider:disabled { opacity: .6; box-shadow: none; }
+
+            .vt-erreur {
+                margin-top: 4px;
+                background: #fdecea;
+                border: 1px solid #f5c6c2;
+                color: #8f1d14;
+                border-radius: 10px;
+                padding: 11px 14px;
+                font-size: 13.5px;
+            }
+
+            .vt-erreur ul { margin: 6px 0 0; padding-left: 18px; }
+
+            @media (max-width: 767px) {
+                .vt-body { padding: 16px; }
+                .vt-bloc { padding: 14px; }
+                .vt-table { font-size: 12.5px; }
+                .vt-table thead th, .vt-table td { padding: 8px 10px; }
+            }
+
             .pos-pagination {
                 display: flex;
                 justify-content: center;
@@ -756,64 +1102,213 @@
         </div>
 
         <div class="modal fade" id="thirdPartyQuickModal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Vente Tierce Rapide - Nouveau Produit</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content vt-modal">
+                    <div class="modal-header vt-header">
+                        <div>
+                            <h5 class="modal-title">Vente tierce</h5>
+                            <p class="vt-sous-titre">Des produits fournis par un partenaire, revendus à votre client.</p>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body">
-                        <form id="quickThirdPartyForm">
+
+                    <div class="modal-body vt-body">
+                        <form id="quickThirdPartyForm" novalidate>
                             @csrf
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Libellé du Produit</label>
-                                    <input type="text" name="libelle" class="form-control" required>
+
+                            {{-- ─── Client ─── --}}
+                            <section class="vt-bloc">
+                                <div class="vt-bloc-tete">
+                                    <span class="vt-num">1</span>
+                                    <h6>Boutique et client</h6>
                                 </div>
-                                <div class="col-md-6">
-                                    <label>SKU / Référence</label>
-                                    <input type="text" name="sku" class="form-control" required>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <label>Prix de Vente au Client</label>
-                                    <input type="number" step="0.01" name="prix" class="form-control" required>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <label>Prix donné par l'Ami</label>
-                                    <input type="number" step="0.01" name="purchase_price_from_partner" class="form-control" required>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <label>Partenaire / Ami</label>
-                                    <div class="d-flex" style="gap:6px;">
-                                        <select name="partner_id" class="form-control partner-select" style="flex:1;" required>
-                                            <option value="">Choisir un partenaire...</option>
-                                            @foreach($partners as $p)
-                                                <option value="{{ $p->id }}">{{ $p->name }} {{ $p->phone ? '('.$p->phone.')' : '' }}</option>
-                                            @endforeach
+
+                                {{-- La boutique se choisit ici : la fenetre ne depend plus du
+                                     panneau de caisse situe derriere elle, qui pouvait etre vide. --}}
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="vt-label">Boutique de vente</label>
+                                        <select id="vtBoutique" class="form-control vt-champ">
+                                            @if ($userStoreId)
+                                                <option value="{{ $userStoreId }}" selected>{{ App\Models\Store::find($userStoreId)?->store_name }}</option>
+                                            @else
+                                                <option value="">Choisir une boutique…</option>
+                                                @foreach ($boutiques as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->store_name }}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
-                                        <button type="button" class="btn btn-sm btn-add-partner" style="background:#1f6f43; color:#fff; white-space:nowrap;">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mt-3">
-                                    <label>Quantité</label>
-                                    <input type="number" name="quantity" value="1" min="1" class="form-control" required>
+
+                                <div class="vt-choix" role="tablist">
+                                    <button type="button" class="vt-choix-btn actif" data-mode="existant">Client existant</button>
+                                    <button type="button" class="vt-choix-btn" data-mode="nouveau">Nouveau client</button>
                                 </div>
-                                <div class="col-12 mt-3">
-                                    <label>Notes</label>
-                                    <textarea name="notes" class="form-control" rows="2"></textarea>
+
+                                <div data-panneau="existant">
+                                    <select id="vtClientExistant" class="form-control vt-champ">
+                                        <option value="">Choisir un client…</option>
+                                        @foreach($customers as $item)
+                                            <option value="{{ $item->id }}">{{ $item->customerName }}{{ $item->mark ? ' — '.$item->mark : '' }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                            </div>
+
+                                <div data-panneau="nouveau" hidden>
+                                    <div class="row g-2">
+                                        <div class="col-md-5">
+                                            <label class="vt-label">Nom du client</label>
+                                            <input type="text" id="vtNouveauNom" class="form-control vt-champ" placeholder="Ex. Mamadou Diallo">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="vt-label">Téléphone</label>
+                                            <input type="text" id="vtNouveauTel" class="form-control vt-champ" placeholder="622 00 00 00">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="vt-label">Adresse</label>
+                                            <input type="text" id="vtNouveauAdresse" class="form-control vt-champ" placeholder="Madina, Conakry">
+                                        </div>
+                                    </div>
+                                    <p class="vt-aide">Le code client est attribué automatiquement.</p>
+                                </div>
+                            </section>
+
+                            {{-- ─── Produits ─── --}}
+                            <section class="vt-bloc">
+                                <div class="vt-bloc-tete">
+                                    <span class="vt-num">2</span>
+                                    <h6>Produits</h6>
+                                    <button type="button" id="vtAjouterLigne" class="vt-btn-ajout">
+                                        <i class="fa fa-plus"></i> Ajouter un produit
+                                    </button>
+                                </div>
+
+                                <div id="vtLignes"></div>
+                            </section>
+
+                            {{-- ─── Récapitulatif ─── --}}
+                            <section class="vt-bloc vt-bloc--recap">
+                                <div class="vt-bloc-tete">
+                                    <span class="vt-num">3</span>
+                                    <h6>Récapitulatif</h6>
+                                </div>
+
+                                <div class="vt-recap">
+                                    <table class="vt-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Produit</th>
+                                                <th class="vt-c">Qté</th>
+                                                <th class="vt-d">Prix unitaire</th>
+                                                <th class="vt-d">Total</th>
+                                                <th class="vt-d">Marge</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="vtRecapCorps">
+                                            <tr class="vt-vide"><td colspan="5">Aucun produit pour l'instant.</td></tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="vt-totaux">
+                                        <div class="vt-ligne-total">
+                                            <span>Articles</span>
+                                            <strong id="vtNbArticles">0</strong>
+                                        </div>
+                                        <div class="vt-ligne-total">
+                                            <span>Marge attendue</span>
+                                            <strong id="vtMarge" class="vt-marge">0 FG</strong>
+                                        </div>
+                                        <div class="vt-ligne-total vt-ligne-total--final">
+                                            <span>Total à payer</span>
+                                            <strong id="vtTotal">0 FG</strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 mt-3">
+                                    <div class="col-md-4">
+                                        <label class="vt-label">Avance versée</label>
+                                        <input type="number" step="0.01" min="0" id="vtAvance" value="0" class="form-control vt-champ">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="vt-label">Mode de paiement</label>
+                                        <select id="vtPaidBy" class="form-control vt-champ">
+                                            <option value="cash">Espèces</option>
+                                            <option value="orange money">Orange Money</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="vt-label">Notes <span class="vt-opt">(facultatif)</span></label>
+                                        <input type="text" id="vtNotes" class="form-control vt-champ" placeholder="Précision sur la vente…">
+                                    </div>
+                                </div>
+                            </section>
                         </form>
+
+                        <div id="vtErreur" class="vt-erreur" hidden></div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="button" id="saveQuickThirdParty" class="btn btn-primary">Enregistrer la Vente</button>
+
+                    <div class="modal-footer vt-footer">
+                        <button type="button" class="btn vt-btn-annuler" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" id="saveQuickThirdParty" class="btn vt-btn-valider">
+                            Enregistrer la vente
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- Gabarit d'une ligne produit, cloné par le script. --}}
+        <template id="vtGabaritLigne">
+            <div class="vt-ligne">
+                <div class="vt-ligne-tete">
+                    <span class="vt-ligne-num"></span>
+                    <button type="button" class="vt-btn-retirer" title="Retirer ce produit">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+                <div class="row g-2">
+                    <div class="col-md-5">
+                        <label class="vt-label">Libellé du produit</label>
+                        <input type="text" class="form-control vt-champ" data-champ="libelle" placeholder="Ex. Tuyau PVC 50 mm">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="vt-label">SKU / Référence</label>
+                        <input type="text" class="form-control vt-champ" data-champ="sku" placeholder="TRC-001">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="vt-label">Partenaire qui fournit</label>
+                        <div class="d-flex" style="gap:6px;">
+                            <select class="form-control vt-champ partner-select" data-champ="partner_id" style="flex:1;">
+                                <option value="">Choisir un partenaire…</option>
+                                @foreach($partners as $p)
+                                    <option value="{{ $p->id }}">{{ $p->name }}{{ $p->phone ? ' ('.$p->phone.')' : '' }}</option>
+                                @endforeach
+                            </select>
+                            <button type="button" class="vt-btn-plus btn-add-partner" title="Nouveau partenaire">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="vt-label">Prix donné par l'ami</label>
+                        <input type="number" step="0.01" min="0" class="form-control vt-champ" data-champ="purchase_price_from_partner" placeholder="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="vt-label">Prix de vente au client</label>
+                        <input type="number" step="0.01" min="0" class="form-control vt-champ" data-champ="prix" placeholder="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="vt-label">Quantité</label>
+                        <input type="number" min="1" step="1" value="1" class="form-control vt-champ" data-champ="quantity">
+                    </div>
+                </div>
+                <div class="vt-ligne-pied">
+                    <span class="vt-ligne-marge"></span>
+                </div>
+            </div>
+        </template>
 
         <div class="modal fade" id="quickPartnerModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-sm modal-dialog-centered">
@@ -947,7 +1442,15 @@
                     const libelle = item.querySelector('.productsetcontent h5').textContent;
                     const imageUrl = item.querySelector('.productsetimg img').src;
 
-                    if (document.querySelector('#product-list li[data-sku="' + sku + '"]')) {
+                    // Second clic sur une carte deja au panier : on retire la ligne.
+                    // Auparavant on sortait sans rien faire — la carte restait
+                    // surlignee et il n'y avait aucun moyen de revenir en arriere
+                    // depuis la grille des produits.
+                    const ligneExistante = document.querySelector('#product-list li[data-sku="' + sku + '"]');
+                    if (ligneExistante) {
+                        ligneExistante.remove();
+                        item.classList.remove('selected');
+                        updateTotalPrice();
                         return;
                     }
 
@@ -1135,6 +1638,14 @@
                     controlerPrix();
 
                     row.querySelector('.row-remove-btn').addEventListener('click', function() {
+                        // La carte correspondante doit perdre son surlignage : sinon
+                        // elle reste marquee comme selectionnee alors qu'elle n'est
+                        // plus au panier, et le vendeur ne sait plus ou il en est.
+                        const carte = document.querySelector('.product-item[data-sku="' + row.getAttribute('data-sku') + '"]');
+                        if (carte) {
+                            carte.classList.remove('selected');
+                        }
+
                         row.remove();
                         updateTotalPrice();
                     });
@@ -1247,48 +1758,247 @@
                     });
                 });
 
-                // Gestion vente tierce rapide
+                // ── Vente tierce : lignes multiples, client, récapitulatif ──
+                const vtLignes    = document.getElementById('vtLignes');
+                const vtGabarit   = document.getElementById('vtGabaritLigne');
+                const vtRecapCorps = document.getElementById('vtRecapCorps');
+                const vtErreur    = document.getElementById('vtErreur');
+
+                const vtFormat = (n) => new Intl.NumberFormat('fr-FR').format(Math.round(n)) + ' FG';
+
+                // Mode client : existant ou nouveau
+                let vtModeClient = 'existant';
+                document.querySelectorAll('.vt-choix-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        vtModeClient = btn.dataset.mode;
+                        document.querySelectorAll('.vt-choix-btn').forEach(b => b.classList.toggle('actif', b === btn));
+                        document.querySelectorAll('[data-panneau]').forEach(function (p) {
+                            p.hidden = p.dataset.panneau !== vtModeClient;
+                        });
+                    });
+                });
+
+                function vtValeurs(ligne) {
+                    const lire = (champ) => ligne.querySelector('[data-champ="' + champ + '"]');
+                    return {
+                        el: ligne,
+                        libelle: lire('libelle').value.trim(),
+                        sku: lire('sku').value.trim(),
+                        partner_id: lire('partner_id').value,
+                        prix: parseFloat(lire('prix').value) || 0,
+                        prixAmi: parseFloat(lire('purchase_price_from_partner').value) || 0,
+                        quantite: parseInt(lire('quantity').value, 10) || 0
+                    };
+                }
+
+                // Renumérote les lignes et redessine le récapitulatif.
+                function vtRafraichir() {
+                    const lignes = [...vtLignes.querySelectorAll('.vt-ligne')];
+                    let total = 0, marge = 0, articles = 0;
+                    const rangs = [];
+
+                    lignes.forEach(function (ligne, i) {
+                        ligne.querySelector('.vt-ligne-num').textContent = 'Produit ' + (i + 1);
+                        ligne.querySelector('.vt-btn-retirer').style.visibility = lignes.length > 1 ? 'visible' : 'hidden';
+
+                        const v = vtValeurs(ligne);
+                        const totalLigne = v.prix * v.quantite;
+                        const margeLigne = (v.prix - v.prixAmi) * v.quantite;
+
+                        // Vendre sous le prix du partenaire est refusé côté serveur :
+                        // on le signale tout de suite plutôt qu'à l'enregistrement.
+                        const pied = ligne.querySelector('.vt-ligne-marge');
+                        if (v.prix > 0 && v.prixAmi > 0) {
+                            const perte = v.prix < v.prixAmi;
+                            pied.className = 'vt-ligne-marge ' + (perte ? 'perte' : 'ok');
+                            pied.textContent = perte
+                                ? 'Vente à perte : le prix est inférieur à celui du partenaire.'
+                                : 'Marge sur cette ligne : ' + vtFormat(margeLigne);
+                        } else {
+                            pied.textContent = '';
+                        }
+
+                        if (v.libelle && v.prix > 0 && v.quantite > 0) {
+                            total += totalLigne;
+                            marge += margeLigne;
+                            articles += v.quantite;
+                            rangs.push({ libelle: v.libelle, quantite: v.quantite, prix: v.prix, totalLigne, margeLigne });
+                        }
+                    });
+
+                    vtRecapCorps.innerHTML = rangs.length
+                        ? rangs.map(r =>
+                            '<tr>' +
+                                '<td>' + r.libelle.replace(/</g, '&lt;') + '</td>' +
+                                '<td class="vt-c">' + r.quantite + '</td>' +
+                                '<td class="vt-d">' + vtFormat(r.prix) + '</td>' +
+                                '<td class="vt-d">' + vtFormat(r.totalLigne) + '</td>' +
+                                '<td class="vt-d" style="color:' + (r.margeLigne < 0 ? '#b42318' : '#1f6f43') + '">' + vtFormat(r.margeLigne) + '</td>' +
+                            '</tr>').join('')
+                        : '<tr class="vt-vide"><td colspan="5">Aucun produit pour l\'instant.</td></tr>';
+
+                    document.getElementById('vtNbArticles').textContent = articles;
+                    document.getElementById('vtMarge').textContent = vtFormat(marge);
+                    document.getElementById('vtTotal').textContent = vtFormat(total);
+                }
+
+                function vtAjouterLigne() {
+                    const ligne = vtGabarit.content.firstElementChild.cloneNode(true);
+
+                    ligne.querySelectorAll('.vt-champ').forEach(function (champ) {
+                        champ.addEventListener('input', vtRafraichir);
+                        champ.addEventListener('change', vtRafraichir);
+                    });
+
+                    ligne.querySelector('.vt-btn-retirer').addEventListener('click', function () {
+                        ligne.remove();
+                        vtRafraichir();
+                    });
+
+                    ligne.querySelector('.btn-add-partner').addEventListener('click', function (e) {
+                        e.preventDefault();
+                        targetPartnerSelect = ligne.querySelector('.partner-select');
+                        quickPartnerModal.show();
+                    });
+
+                    vtLignes.appendChild(ligne);
+                    vtRafraichir();
+                    ligne.querySelector('[data-champ="libelle"]').focus();
+                    return ligne;
+                }
+
+                document.getElementById('vtAjouterLigne').addEventListener('click', vtAjouterLigne);
+
+                // Une ligne vierge dès l'ouverture, pour ne pas accueillir le vendeur
+                // sur un formulaire vide.
+                thirdPartyQuickModalEl.addEventListener('show.bs.modal', function () {
+                    if (!vtLignes.querySelector('.vt-ligne')) {
+                        vtAjouterLigne();
+                    }
+
+                    // Si une boutique est deja choisie en caisse, on la reprend :
+                    // le vendeur n'a pas a la ressaisir.
+                    const enCaisse = document.getElementById('store_id');
+                    const dansFenetre = document.getElementById('vtBoutique');
+                    if (enCaisse && enCaisse.value && !dansFenetre.value) {
+                        dansFenetre.value = enCaisse.value;
+                    }
+
+                    vtRafraichir();
+                });
+
+                function vtAfficherErreurs(messages) {
+                    vtErreur.innerHTML = messages.length === 1
+                        ? messages[0]
+                        : 'Corrigez les points suivants :<ul><li>' + messages.join('</li><li>') + '</li></ul>';
+                    vtErreur.hidden = false;
+                    vtErreur.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+
                 document.getElementById('saveQuickThirdParty').addEventListener('click', function () {
-                    const form = document.getElementById('quickThirdPartyForm');
-                    if (!form.checkValidity()) {
-                        form.reportValidity();
+                    const bouton = this;
+                    vtErreur.hidden = true;
+                    document.querySelectorAll('#thirdPartyQuickModal .vt-invalide').forEach(c => c.classList.remove('vt-invalide'));
+
+                    const erreurs = [];
+                    const lignes = [...vtLignes.querySelectorAll('.vt-ligne')].map(vtValeurs);
+
+                    if (!lignes.length) {
+                        erreurs.push('Ajoutez au moins un produit.');
+                    }
+
+                    lignes.forEach(function (v, i) {
+                        const marquer = (champ) => v.el.querySelector('[data-champ="' + champ + '"]').classList.add('vt-invalide');
+                        const n = 'Produit ' + (i + 1) + ' : ';
+                        if (!v.libelle)      { erreurs.push(n + 'le libellé est obligatoire.'); marquer('libelle'); }
+                        if (!v.sku)          { erreurs.push(n + 'la référence est obligatoire.'); marquer('sku'); }
+                        if (!v.partner_id)   { erreurs.push(n + 'choisissez le partenaire.'); marquer('partner_id'); }
+                        if (v.prix <= 0)     { erreurs.push(n + 'indiquez le prix de vente.'); marquer('prix'); }
+                        if (v.prixAmi <= 0)  { erreurs.push(n + "indiquez le prix donné par l'ami."); marquer('purchase_price_from_partner'); }
+                        if (v.quantite < 1)  { erreurs.push(n + "la quantité doit être d'au moins 1."); marquer('quantity'); }
+                        if (v.prix > 0 && v.prixAmi > 0 && v.prix < v.prixAmi) {
+                            erreurs.push(n + 'vente à perte, le prix est inférieur à celui du partenaire.');
+                            marquer('prix');
+                        }
+                    });
+
+                    const boutiqueId = document.getElementById('vtBoutique').value;
+                    if (!boutiqueId) {
+                        erreurs.push('Choisissez la boutique qui enregistre cette vente.');
+                        document.getElementById('vtBoutique').classList.add('vt-invalide');
+                    }
+
+                    const clientId = document.getElementById('vtClientExistant').value;
+                    const nouveauNom = document.getElementById('vtNouveauNom').value.trim();
+
+                    if (vtModeClient === 'existant' && !clientId) {
+                        erreurs.push('Choisissez un client, ou passez à « Nouveau client ».');
+                    }
+                    if (vtModeClient === 'nouveau' && !nouveauNom) {
+                        erreurs.push('Renseignez le nom du nouveau client.');
+                        document.getElementById('vtNouveauNom').classList.add('vt-invalide');
+                    }
+
+                    if (erreurs.length) {
+                        vtAfficherErreurs(erreurs);
                         return;
                     }
 
-                    const formData = new FormData(form);
-                    formData.append('store_id', document.getElementById('store_id').value);
-                    formData.append('customer_id', document.getElementById('customer_id').value || '');
-                    
-                    const saveBtn = this;
-                    saveBtn.disabled = true;
-                    saveBtn.textContent = 'Enregistrement...';
+                    const donnees = new FormData();
+                    donnees.append('store_id', document.getElementById('vtBoutique').value || '');
+                    donnees.append('avance', document.getElementById('vtAvance').value || 0);
+                    donnees.append('paid_by', document.getElementById('vtPaidBy').value);
+                    donnees.append('notes', document.getElementById('vtNotes').value);
+
+                    if (vtModeClient === 'existant') {
+                        donnees.append('customer_id', clientId);
+                    } else {
+                        donnees.append('nouveau_client[customerName]', nouveauNom);
+                        donnees.append('nouveau_client[tel]', document.getElementById('vtNouveauTel').value.trim());
+                        donnees.append('nouveau_client[address]', document.getElementById('vtNouveauAdresse').value.trim());
+                    }
+
+                    lignes.forEach(function (v, i) {
+                        donnees.append('lignes[' + i + '][libelle]', v.libelle);
+                        donnees.append('lignes[' + i + '][sku]', v.sku);
+                        donnees.append('lignes[' + i + '][prix]', v.prix);
+                        donnees.append('lignes[' + i + '][purchase_price_from_partner]', v.prixAmi);
+                        donnees.append('lignes[' + i + '][partner_id]', v.partner_id);
+                        donnees.append('lignes[' + i + '][quantity]', v.quantite);
+                    });
+
+                    bouton.disabled = true;
+                    bouton.textContent = 'Enregistrement…';
 
                     fetch('{{ route("pos.storeQuickThirdParty") }}', {
                         method: 'POST',
-                        body: formData,
+                        body: donnees,
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                             'Accept': 'application/json'
                         }
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        saveBtn.disabled = false;
-                        saveBtn.textContent = 'Enregistrer la Vente';
-                        if (data.success) {
-                            alert(data.message);
-                            thirdPartyQuickModal.hide();
-                            form.reset();
-                            window.location.href = data.redirect;
-                        } else {
-                            alert(data.message || "Erreur lors de l'enregistrement de la vente.");
+                    .then(r => r.json().then(data => ({ ok: r.ok, data })))
+                    .then(function (reponse) {
+                        bouton.disabled = false;
+                        bouton.textContent = 'Enregistrer la vente';
+
+                        if (reponse.ok && reponse.data.success) {
+                            window.location.href = reponse.data.redirect;
+                            return;
                         }
+
+                        // Erreurs de validation renvoyées champ par champ
+                        const messages = reponse.data.errors
+                            ? Object.values(reponse.data.errors).flat()
+                            : [reponse.data.message || "Erreur lors de l'enregistrement."];
+                        vtAfficherErreurs(messages);
                     })
-                    .catch(error => {
-                        saveBtn.disabled = false;
-                        saveBtn.textContent = 'Enregistrer la Vente';
-                        console.error('Erreur:', error);
-                        alert("Erreur réseau, veuillez réessayer.");
+                    .catch(function (e) {
+                        bouton.disabled = false;
+                        bouton.textContent = 'Enregistrer la vente';
+                        console.error(e);
+                        vtAfficherErreurs(['Erreur réseau, veuillez réessayer.']);
                     });
                 });
 

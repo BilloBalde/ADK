@@ -18,6 +18,7 @@ use App\Services\StockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\SalesExport;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -761,152 +762,221 @@ class SaleController extends Controller
     /**
      * Store a quick third-party sale with a new product
      */
+    /**
+     * Vente tierce : des produits fournis par un partenaire, revendus au client.
+     *
+     * Accepte plusieurs lignes en une seule facture, et permet de créer le client
+     * dans la foulée. Auparavant l'écran ne prenait qu'un produit à la fois, et un
+     * client non renseigné faisait retomber la vente sur `Customer::first()` —
+     * elle était alors imputée à quelqu'un au hasard, sans que personne le voie.
+     */
     public function storeQuickThirdParty(Request $request)
     {
-        $request->validate([
-            'libelle' => 'required|string|max:255',
-            'sku' => 'required|string|max:100',
-            'prix' => 'required|numeric|min:0',
-            'purchase_price_from_partner' => 'required|numeric|min:0',
-            'partner_id' => 'required|exists:partners,id',
-            'quantity' => 'required|integer|min:1',
-            'notes' => 'nullable|string',
+        $donnees = $request->validate([
+            'store_id'   => 'nullable|exists:stores,id',
+            'customer_id' => 'nullable|exists:customers,id',
+            'nouveau_client.customerName' => 'nullable|string|max:255',
+            'nouveau_client.tel'          => 'nullable|string|max:40',
+            'nouveau_client.address'      => 'nullable|string|max:255',
+            'avance'  => 'nullable|numeric|min:0',
+            'paid_by' => 'nullable|string|max:40',
+            'notes'   => 'nullable|string',
+
+            'lignes'                                => 'required|array|min:1',
+            'lignes.*.libelle'                      => 'required|string|max:255',
+            'lignes.*.sku'                          => 'required|string|max:100',
+            'lignes.*.prix'                         => 'required|numeric|min:0',
+            'lignes.*.purchase_price_from_partner'  => 'required|numeric|min:0',
+            'lignes.*.partner_id'                   => 'required|exists:partners,id',
+            'lignes.*.quantity'                     => 'required|integer|min:1',
+        ], [
+            'lignes.required'              => 'Ajoutez au moins un produit.',
+            'lignes.*.libelle.required'    => 'Le libellé du produit est obligatoire.',
+            'lignes.*.sku.required'        => 'La référence du produit est obligatoire.',
+            'lignes.*.quantity.min'        => 'La quantité doit être d\'au moins 1.',
+            'lignes.*.partner_id.required' => 'Indiquez le partenaire qui fournit le produit.',
         ]);
+
+        $lignes = array_values($donnees['lignes']);
 
         DB::beginTransaction();
         try {
-            // Créer ou récupérer le produit
-            $product = Product::where('sku', $request->sku)->first();
-            
-            if (!$product) {
-                // Récupérer tous les champs requis de la table products
-                $productData = [
-                    'libelle' => $request->libelle,
-                    'sku' => $request->sku,
-                    'code' => $request->sku, // Si code est requis et différent de sku
-                    'price' => $request->prix,
-                    'price_sale' => 0,
-                    'quantity' => 0,
-                    'stock_alert' => 0,
-                    'status' => 'active',
-                    'user_id' => auth()->id(),
-                    'description' => $request->libelle ?? 'Produit tierce', // ✅ Important
-                    'mark' => 'TIERCE', // Si le champ mark est requis
-                    'category_id' => null, // Si category_id peut être null
-                ];
+            $storeId = $this->resoudreBoutique($request->input('store_id'));
+            $customerId = $this->resoudreClient($request);
 
-                // Ajouter d'autres champs s'ils sont requis
-                if (Schema::hasColumn('products', 'code')) {
-                    $productData['code'] = $request->sku;
-                }
-                if (Schema::hasColumn('products', 'description')) {
-                    $productData['description'] = $request->libelle;
-                }
-                if (Schema::hasColumn('products', 'mark')) {
-                    $productData['mark'] = 'TIERCE';
-                }
-                if (Schema::hasColumn('products', 'barcode')) {
-                    $productData['barcode'] = $request->sku;
-                }
-
-                $product = Product::create($productData);
-            }
-
-            // Générer un numéro de facture
             $numeroFacture = $this->prochainNumeroFacture();
 
-            // Récupérer le magasin
-            $storeId = $request->store_id;
-            if (auth()->user()->role_id == 3 && empty($storeId)) {
-                $storeId = Store::where('user_id', auth()->user()->id)->value('id');
+            $total = 0.0;
+            $quantiteTotale = 0;
+
+            foreach ($lignes as $ligne) {
+                $prix = (float) $ligne['prix'];
+                $prixAmi = (float) $ligne['purchase_price_from_partner'];
+                $quantite = (int) $ligne['quantity'];
+
+                // Le prix payé au partenaire est le prix de revient de la ligne :
+                // vendre en dessous est refusé, comme pour une vente normale.
+                $this->assertPriceCoversCost($ligne['libelle'], $prix, $prixAmi);
+
+                $produit = $this->produitTierce($ligne);
+
+                Sale::create([
+                    'numeroFacture' => $numeroFacture,
+                    'product_id'    => $produit->id,
+                    'prix'          => $prix,
+                    'quantity'      => $quantite,
+                    'prixTotal'     => $prix * $quantite,
+                    'interet'       => ($prix - $prixAmi) * $quantite,
+                    'store_id'      => $storeId,
+                    'user_id'       => auth()->id(),
+                    'is_third_party' => true,
+                    'partner_id'    => $ligne['partner_id'],
+                    'purchase_price_from_partner' => $prixAmi,
+                ]);
+
+                $total += $prix * $quantite;
+                $quantiteTotale += $quantite;
             }
-            
-            // S'assurer qu'un store_id existe
-            if (empty($storeId)) {
-                $storeId = Store::first()->id ?? 1;
-            }
 
-            // S'assurer qu'un customer_id existe
-            $customerId = $request->customer_id;
-            if (empty($customerId)) {
-                // Utiliser un client par défaut ou le premier client
-                $defaultCustomer = Customer::first();
-                if ($defaultCustomer) {
-                    $customerId = $defaultCustomer->id;
-                } else {
-                    throw new \Exception('Aucun client trouvé. Veuillez d\'abord créer un client.');
-                }
-            }
+            $avance = min((float) ($request->input('avance') ?? 0), $total);
+            $reste = round($total - $avance, 2);
 
-            // Vente tierce rapide : le coût de référence est le prix payé au partenaire.
-            $this->assertPriceCoversCost(
-                $request->libelle,
-                (float) $request->prix,
-                (float) $request->purchase_price_from_partner
-            );
-
-            $prixTotal = $request->prix * $request->quantity;
-            $interet = ($request->prix - $request->purchase_price_from_partner) * $request->quantity;
-
-            // Créer la vente
-            Sale::create([
-                'numeroFacture' => $numeroFacture,
-                'product_id' => $product->id,
-                'prix' => $request->prix,
-                'quantity' => $request->quantity,
-                'prixTotal' => $prixTotal,
-                'interet' => $interet,
-                'store_id' => $storeId,
-                'user_id' => auth()->id(),
-                'is_third_party' => true,
-                'partner_id' => $request->partner_id,
-                'purchase_price_from_partner' => $request->purchase_price_from_partner,
-            ]);
-
-            // Créer la facture
-            $avance = $request->avance ?? 0;
-            $reste = $prixTotal - $avance;
-            
             $facture = Facture::create([
                 'numero_facture' => $numeroFacture,
-                'store_id' => $storeId,
-                'customer_id' => $customerId,
-                'montant_total' => $prixTotal,
-                'quantity' => $request->quantity,
-                'avance' => $avance,
-                'notes' => $request->notes,
-                'reste' => $reste,
-                'statut' => $reste == 0 ? 'payé' : 'non payé',
-                'livraison' => $reste == 0 ? 'livré' : 'non livré',
+                'store_id'       => $storeId,
+                'customer_id'    => $customerId,
+                'montant_total'  => $total,
+                'quantity'       => $quantiteTotale,
+                'avance'         => $avance,
+                'notes'          => $request->input('notes'),
+                'reste'          => $reste,
+                'statut'         => $reste <= 0 ? 'payé' : 'non payé',
+                'livraison'      => $reste <= 0 ? 'livré' : 'non livré',
             ]);
 
-            // Créer le paiement
-            $receiptNumber = generateReceiptNumber('RCF', (Payment::max('id') ?? 0) + 1);
             Payment::create([
-                'facture_id' => $facture->id,
-                'versement' => $facture->avance,
-                'total_paye' => $facture->avance,
-                'paid_by' => $request->paid_by ?? 'cash',
-                'reste' => $reste,
-                'note' => "Vente tierce rapide - " . ($request->notes ?? ''),
-                'receipt_number' => $receiptNumber,
+                'facture_id'  => $facture->id,
+                'versement'   => $avance,
+                'total_paye'  => $avance,
+                'paid_by'     => $request->input('paid_by') ?? 'cash',
+                'reste'       => $reste,
+                'note'        => 'Vente tierce — ' . ($request->input('notes') ?? ''),
+                'receipt_number' => generateReceiptNumber('RCF', (Payment::max('id') ?? 0) + 1),
             ]);
+
+            // Les compteurs du client se déduisent de ses factures : sans cet appel,
+            // la vente tierce n'apparaissait pas dans son solde.
+            Customer::find($customerId)?->recalculerCompteurs();
 
             DB::commit();
 
             return response()->json([
-                'success' => true,
-                'message' => 'Vente tierce enregistrée avec succès',
-                'redirect' => route('factures.index')
+                'success'  => true,
+                'message'  => sprintf(
+                    'Vente tierce n° %s enregistrée : %d produit(s), %s GNF.',
+                    $numeroFacture,
+                    count($lignes),
+                    number_format($total, 0, ',', ' ')
+                ),
+                'redirect' => route('factures.index'),
             ]);
-
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            \Log::error('Erreur vente tierce rapide: ' . $e->getMessage());
+            Log::error('Vente tierce : ' . $e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur : ' . $e->getMessage()
-            ], 500);
+                'message' => $e->getMessage(),
+            ], 422);
         }
+    }
+
+    /**
+     * Boutique de la vente : celle choisie, sinon celle du vendeur.
+     */
+    private function resoudreBoutique($choisie): int
+    {
+        if (! empty($choisie)) {
+            return (int) $choisie;
+        }
+
+        $propre = Store::where('user_id', auth()->id())->value('id');
+
+        if ($propre) {
+            return (int) $propre;
+        }
+
+        throw new \RuntimeException('Aucune boutique sélectionnée pour cette vente.');
+    }
+
+    /**
+     * Client de la vente : celui choisi, ou celui que le vendeur vient de saisir.
+     *
+     * Aucun repli sur un client existant : une facture attribuée au hasard fausse
+     * le solde d'une personne qui n'a rien acheté.
+     */
+    private function resoudreClient(Request $request): int
+    {
+        if ($request->filled('customer_id')) {
+            return (int) $request->input('customer_id');
+        }
+
+        $nom = trim((string) $request->input('nouveau_client.customerName'));
+
+        if ($nom === '') {
+            throw new \RuntimeException('Choisissez un client, ou renseignez le nom du nouveau client.');
+        }
+
+        return Customer::create([
+            'customerName' => $nom,
+            'mark'    => $this->marqueClientLibre($nom),
+            'tel'     => trim((string) $request->input('nouveau_client.tel')) ?: 'N/A',
+            'address' => trim((string) $request->input('nouveau_client.address')) ?: 'N/A',
+            'fidelite' => 1,
+        ])->id;
+    }
+
+    /**
+     * Code client libre, dérivé du nom.
+     *
+     * `customers.mark` porte un index unique que MySQL applique sans regarder
+     * `deleted_at` : on avance jusqu'à trouver un code qu'aucune fiche, même
+     * archivée, ne détient déjà.
+     */
+    private function marqueClientLibre(string $nom): string
+    {
+        $base = strtoupper(preg_replace('/[^A-Za-z]/', '', $nom));
+        $base = $base !== '' ? substr($base, 0, 3) : 'CLI';
+
+        $i = 1;
+        do {
+            $marque = $base . str_pad((string) $i, 3, '0', STR_PAD_LEFT);
+            $i++;
+        } while (Customer::withTrashed()->where('mark', $marque)->exists());
+
+        return $marque;
+    }
+
+    /**
+     * Produit correspondant à une ligne tierce, créé s'il n'existe pas encore.
+     *
+     * Le stock n'est pas touché : la marchandise vient du partenaire, elle n'a
+     * jamais été en boutique.
+     */
+    private function produitTierce(array $ligne): Product
+    {
+        $produit = Product::where('sku', $ligne['sku'])->first();
+
+        if ($produit) {
+            return $produit;
+        }
+
+        return Product::create([
+            'libelle'     => $ligne['libelle'],
+            'sku'         => $ligne['sku'],
+            'description' => $ligne['libelle'],
+            'price'       => $ligne['prix'],
+            'price_sale'  => $ligne['purchase_price_from_partner'],
+        ]);
     }
 }
